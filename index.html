@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(45deg, #ff5f6d, #ffc371);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .love-container {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            animation: fadeIn 2s ease forwards;
+            text-align: center;
+        }
+
+        .love {
+            font-size: 10rem;
+            color: red;
+            text-shadow: 3px 3px 5px rgba(255, 255, 255, 0.8);
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .message {
+            font-size: 1.5rem;
+            color: white;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 2s 4s ease forwards;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireworks"></canvas>
+
+    <div class="love-container">
+        <div class="love">❤️</div>
+        <div class="message">
+            <p>Happy New Year, Renata! ❤️</p>
+            <p>Wishing you endless happiness and may all your dreams come true in the most amazing ways.🥰🥰</p>
+            <p> btw ,kamu ga lagi bbq an?</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = random(2, 5);
+                this.speedX = random(-3, 3);
+                this.speedY = random(-3, 3);
+                this.opacity = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.opacity -= 0.02;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function createFirework(x, y) {
+            const colors = ['#ff6b6b', '#ffa502', '#1e90ff', '#7bed9f'];
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if (p.opacity <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function startFireworks() {
+            const interval = setInterval(() => {
+                createFirework(random(0, canvas.width), random(0, canvas.height));
+            }, 500);
+            setTimeout(() => {
+                clearInterval(interval);
+                document.querySelector('.love-container').style.display = 'flex';
+                canvas.style.display = 'none';
+            }, 5000);
+        }
+
+        startFireworks();
+        animate();
+    </script>
+</body>
+</html>
